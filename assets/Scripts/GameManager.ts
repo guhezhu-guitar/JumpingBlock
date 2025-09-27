@@ -5,16 +5,22 @@ const { ccclass, property } = _decorator;
     //创建保存小方块格子的类型,使用的是枚举
     enum BlockType{
         BT_NONE, //表示空格子
-        BT_STONE,
+        BT_WHITE,
     };
+
+    enum GameState {
+        GS_MENU,    //开始菜单按钮
+    }
 
 @ccclass('GameManager')
 export class GameManager extends Component {
 
+    @property(Node)
+    public boxP: Node = null;
    
     //创建地图方块的预制体
     @property(Prefab)
-    public boxPrefab = null;
+    public boxPrefab:Prefab = null;
     //设置地图的长度
     @property
     public roadLength =50;
@@ -24,7 +30,7 @@ export class GameManager extends Component {
 
 
     start() {
-        this.generateRoad()
+        this.generateRoad();
     }
 
     //定义生成地图的方法
@@ -35,30 +41,31 @@ export class GameManager extends Component {
 
         this._road=[]; //游戏运行时将数组清空
         //将一个数据储存在数组里面
-        this._road.push(BlockType.BT_STONE); //生成的第一个格子必须是白色的格子
+        this._road.push(BlockType.BT_WHITE); //生成的第一个格子必须是白色的格子
 
         for(let i=1;i<this.roadLength;i++){
             //前一个方块为空的话,下一个方块就要指定为白块,不为空的话就随机生成一个方块
             if(this._road[i - 1]==BlockType.BT_NONE){
-                this._road.push(BlockType.BT_STONE);
+                this._road.push(BlockType.BT_WHITE);
             }else{
-            // this._road.push(Math.round(Math.random()));
-            this._road.push(Math.floor(Math.random()*2));  //两种方法,选一种就行
+            this._road.push(Math.round(Math.random()));
+            // this._road.push(Math.floor(Math.random()*2));  //两种方法,选一种就行
             }
         }
 
         for(let j =1;j<this.roadLength;j++){
-            if(this._road[j]==BlockType.BT_STONE){
+            if(this._road[j]==BlockType.BT_WHITE){
                 const box = instantiate(this.boxPrefab);
             //将box节点的父节点设置
-            box.setParent(this.node);
+            box.setParent(this.boxP);
             box.setPosition(j*40,0,0);
             }
-            
-    }
         }
-
+        
     }
+        
+
+    
         
 
     // update(deltaTime: number) {
@@ -66,4 +73,4 @@ export class GameManager extends Component {
     // }
 
 
-
+}
