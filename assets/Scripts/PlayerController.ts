@@ -16,9 +16,12 @@ export class PlayerController extends Component {
     @property(Animation)
     public bodyAnim : Animation =null;
 
+    private _curTotalStep =0;   //用来保存总共跳的步数
+
     start() {
         // input.on(Input.EventType.MOUSE_DOWN,this.onMouseDown,this)
     }
+    
     //给player控制状态设置一个方法,判断玩家这时候会不会被控制,用于ui制作时在菜单界面解绑对玩家的一个控制
     public setIsControl(value:boolean){
         if(value){
@@ -78,6 +81,7 @@ export class PlayerController extends Component {
         //让动画的时间和跳跃时间重合,使用统一的jumpTime的值
         this.bodyAnim.play(animName)
         
+        this._curTotalStep +=step;  //将步数加起来
     }
 
 
@@ -91,6 +95,8 @@ export class PlayerController extends Component {
             }else{
                 const curPos =this.node.position;
                 this.node.setPosition(curPos.x+this._jumpSpeed*dt,curPos.y,curPos.z);
+                
+                this.node.emit('JumpEnd',this._curTotalStep);    //发送了jumpend的事件,返回值是所走的步数
             }
         }
     }

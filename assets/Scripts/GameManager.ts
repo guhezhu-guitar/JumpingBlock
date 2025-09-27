@@ -1,4 +1,4 @@
-import { _decorator, Component, Enum, instantiate, Node, Prefab } from 'cc';
+import { _decorator, Component, Enum, instantiate, Label, Node, Prefab } from 'cc';
 import { PlayerController } from './PlayerController';
 const { ccclass, property } = _decorator;
 
@@ -38,10 +38,17 @@ export class GameManager extends Component {
 
     @property(Node)
     public startMenu:Node =null;    //用来控制菜单的ui界面的显示
+    
+    @property(Label)
+    public stepLabel:Label = null;
+
 
     start() {
         // this.generateRoad();
         this.setCurState(GameState.GS_MENU); //开始的时候在开始的菜单
+
+        //通过调用playercontroller里面的节点去监听jumpend(跳跃失败)的事件
+        this.playController.node.on('jumpEnd',this.onJumpEnd,this)
     }
 
     //定义状态切换的方法 
@@ -64,6 +71,9 @@ export class GameManager extends Component {
     //检测按钮被点击时会触发的方法
     onStartButtonClick(){
         this.setCurState(GameState.GS_PLAYING);
+    }
+    onJumpEnd(value:number){
+        this.stepLabel.string =value.toString();
     }
 
     //定义生成地图的方法
