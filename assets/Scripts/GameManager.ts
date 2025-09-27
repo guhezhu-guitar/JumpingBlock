@@ -1,4 +1,5 @@
 import { _decorator, Component, Enum, instantiate, Node, Prefab } from 'cc';
+import { PlayerController } from './PlayerController';
 const { ccclass, property } = _decorator;
 
 
@@ -10,10 +11,13 @@ const { ccclass, property } = _decorator;
 
     enum GameState {
         GS_MENU,    //开始菜单按钮
+        GS_PLAYING,  //游戏游玩界面
+        // GS_END       //游戏结束界面
     }
 
 @ccclass('GameManager')
 export class GameManager extends Component {
+    
 
     @property(Node)
     public boxP: Node = null;
@@ -27,10 +31,39 @@ export class GameManager extends Component {
     //定义一个数组,用来保存所有的格子类型的
     private _road:BlockType[]=[];
 
+    // private gameState   //定义当前的状态（如果需要的话可以增加）
 
+    @property(PlayerController)
+    public playController:PlayerController =null;
+
+    @property(Node)
+    public startMenu:Node =null;    //用来控制菜单的ui界面的显示
 
     start() {
+        // this.generateRoad();
+        this.setCurState(GameState.GS_MENU); //开始的时候在开始的菜单
+    }
+
+    //定义状态切换的方法 
+    setCurState(value:GameState){
+        if(value==GameState.GS_MENU){
+            //菜单界面
         this.generateRoad();
+        this.playController.setIsControl(false);    //表示了这时候不能去控制player
+
+            this.startMenu.active =true;    //表示ui是激活状态
+
+        //禁用playcontroller的控制
+
+        }else if(value==GameState.GS_PLAYING){
+            this.playController.setIsControl(true);
+            this.startMenu.active =false;
+
+        }
+    }
+    //检测按钮被点击时会触发的方法
+    onStartButtonClick(){
+        this.setCurState(GameState.GS_PLAYING);
     }
 
     //定义生成地图的方法

@@ -17,8 +17,18 @@ export class PlayerController extends Component {
     public bodyAnim : Animation =null;
 
     start() {
-        input.on(Input.EventType.MOUSE_DOWN,this.onMouseDown,this)
+        // input.on(Input.EventType.MOUSE_DOWN,this.onMouseDown,this)
     }
+    //给player控制状态设置一个方法,判断玩家这时候会不会被控制,用于ui制作时在菜单界面解绑对玩家的一个控制
+    public setIsControl(value:boolean){
+        if(value){
+            input.on(Input.EventType.MOUSE_DOWN,this.onMouseDown,this);    //表示可以被控制
+            }else {
+                input.off(Input.EventType.MOUSE_DOWN,this.onMouseDown,this);    //表示不能被控制
+    }
+            } 
+        
+    
 
     onMouseDown(event:EventMouse){
         //判断鼠标左键和右键
