@@ -16,7 +16,7 @@ export class PlayerController extends Component {
     @property(Animation)
     public bodyAnim : Animation =null;
 
-    private _curTotalStep =0;   //用来保存总共跳的步数
+    public _curTotalStep =0;   //用来保存总共跳的步数
 
     start() {
         // input.on(Input.EventType.MOUSE_DOWN,this.onMouseDown,this)
@@ -41,6 +41,8 @@ export class PlayerController extends Component {
             this.jumpByStep(2);
         }
     }
+
+    
 
     jumpByStep(step:number){
         //这样的移动没有移动的轨迹
@@ -81,7 +83,8 @@ export class PlayerController extends Component {
         //让动画的时间和跳跃时间重合,使用统一的jumpTime的值
         this.bodyAnim.play(animName)
         
-        this._curTotalStep +=step;  //将步数加起来
+        this._curTotalStep += step;  //将步数加起来
+        
     }
 
 
@@ -101,6 +104,11 @@ export class PlayerController extends Component {
         }
     }
 
+    //设置路重置的方法
+    public reset (){
+        this.node.setPosition(0,0,0);
+        this._curTotalStep = 0;
+    }
 
 
     //用于事件取消绑定的事件(本质还是销毁)

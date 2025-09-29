@@ -48,12 +48,21 @@ export class GameManager extends Component {
         this.setCurState(GameState.GS_MENU); //开始的时候在开始的菜单
 
         //通过调用playercontroller里面的节点去监听jumpend(跳跃失败)的事件
-        this.playController.node.on('jumpEnd',this.onJumpEnd,this)
+        this.playController.node.on('JumpEnd',this.onJumpEnd,this);
     }
 
     //定义状态切换的方法 
     setCurState(value:GameState){
         if(value==GameState.GS_MENU){
+            
+            //每次生成路之前先进行重置
+
+            this.playController.reset();
+            console.log('this.node.position');
+            
+
+            this.stepLabel.string ='0';
+
             //菜单界面
         this.generateRoad();
         this.playController.setIsControl(false);    //表示了这时候不能去控制player
@@ -74,6 +83,19 @@ export class GameManager extends Component {
     }
     onJumpEnd(value:number){
         this.stepLabel.string =value.toString();
+        this.checkResult(value);
+    }
+
+    //判断游戏的结果
+    checkResult(totalStlp:number){
+        //代表游戏成功
+        if(totalStlp>=this.roadLength){
+            this.setCurState(GameState.GS_MENU);    //游戏成功之后就调出菜单界面
+        }else{
+            if(this._road[totalStlp]==BlockType.BT_NONE){
+                this.setCurState(GameState.GS_MENU);
+            }
+        }
     }
 
     //定义生成地图的方法
